@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/RichardGarza/bloccit#readme",
   "dependencies": {
+    "dotenv": "^5.0.0",
     "express": "^4.16.2"
   },
   "devDependencies": {
