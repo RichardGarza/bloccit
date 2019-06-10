@@ -18,5 +18,5 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "CASCADE",
     });
   };
-  return Banner;
+  return Rule;
 };
