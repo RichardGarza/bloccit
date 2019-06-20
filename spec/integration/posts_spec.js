@@ -85,8 +85,6 @@ describe("routes : posts", () => {
       const options = {
         url: `${base}/${this.topic.id}/posts/create`,
         form: {
-
-//#1
           title: "a",
           body: "b"
         }
@@ -95,7 +93,6 @@ describe("routes : posts", () => {
       request.post(options,
         (err, res, body) => {
 
-//#2
           Post.findOne({where: {title: "a"}})
           .then((post) => {
               expect(post).toBeNull();
