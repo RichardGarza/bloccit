@@ -44,23 +44,38 @@ describe('User', () => {
 
       it("should not create a user with an email already taken", (done) => {
 
-
+          // Check this out, when running the tests, this section only partially
+          // runs. 
+          console.log('This will show the test is running.');
+          // This console.log will run when you run the tests, but look below.
             User.create({
               email: "user@example.com",
               password: "1234567890"
             })
             .then((user) => {
-      
+          // Still running...see!
+            console.log('Still running...')
+
             User.create({
               email: "user@example.com",
               password: "nananananananananananananananana BATMAN!"
             })
             .then((user) => {
-              // This section will be skipped due to the error.
+              // This section will be skipped due to the error, (hopefully).
+              console.log('This should not run');
               done();
             })
             .catch((err) => {
+              // This section should run when it gets the error, right?
+
+              console.log('This should run right?');
+              // But it doesn't. And to prove this furthermore...
+
               expect(err.message).toContain("Validation error");
+              // I duplicated the expect statement and misspelled message...
+              
+              expect(err.mage).toContain("Validation error");
+              // and still the tests run with no errors...
               done();
             });
             done();
