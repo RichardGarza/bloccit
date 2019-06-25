@@ -6,7 +6,7 @@ module.exports = {
     res.render("users/sign_up");
   },
   create(req, res, next){
-
+       
        // Make newUser object from request body.
     let newUser = {
       email: req.body.email,
@@ -16,16 +16,23 @@ module.exports = {
 
        // Call createuser with newUser object.
     userQueries.createUser(newUser, (err, user) => {
-
+      
        // If there's an error, display it and redirect to sign up.
       if(err){
         req.flash("error", err);
         res.redirect("/users/sign_up");
       } else {
 
-        // If all is well, we authenticate sign in.
-        passport.authenticate("local")(req, res, () => {
+        // I'm having a problem right here. When passport.authenticate 
+        // runs, it should set req.user to the user. I provided a 
+        // success/failure redirect and while it directs me to 
+        // the successful route, the req.user remains undefined.
+        
+        passport.authenticate("local", { successRedirect: '/',
+        failureRedirect: '/login' })(req, res, () => {
+          console.log(req.user,'req.user');
           req.flash("notice", "You've successfully signed in!");
+          
           res.redirect("/");
         });
       }
