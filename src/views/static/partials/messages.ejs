@@ -4,11 +4,17 @@
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <% if(messages.error) { %>
+      <% if(messages.error) {%>
       Validation errors:
       <ul>
         <% messages.error.forEach((err) => { %>
-          <li><%= `${err.param} ${err.msg}` %></li>
+          <% if(err.name === 'SequelizeUniqueConstraintError') {console.log(err,'ERR') %>
+          <li><%= `Email already registered. ` %><a href="/users/sign_in">Sign In</a></li>
+          <% } else if(err.msg) { %>
+          <li><%= `${err.msg}` %></li>
+          <% } else if(err.name) { %>
+            <li><%= `${err.name}` %></li>
+          <% } %>
         <% }) %>
       </ul>
       <% } else { %>
