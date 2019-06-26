@@ -129,7 +129,7 @@ describe("routes : posts", () => {
       request.post(`${base}/${this.topic.id}/posts/${this.post.id}/destroy`, (err, res, body) => {
 
 //#2
-        Post.findById(1)
+        Post.findByPk(1)
         .then((post) => {
           expect(err).toBeNull();
           expect(post).toBeNull();

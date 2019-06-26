@@ -1,5 +1,6 @@
 const sequelize = require('../../src/db/models/index').sequelize;
 const User = require("../../src/db/models").User;
+const userQueries = require("../../src/db/queries.users.js");
 
 describe('User', () => {
     beforeEach((done) => {
@@ -9,7 +10,6 @@ describe('User', () => {
         done();
       })
       .catch((err) => {
-        console.log(err); 
         done();});
     });
     describe('Create', () => {
@@ -24,7 +24,6 @@ describe('User', () => {
           done();
         })
         .catch((err) => {
-          console.log(err); 
           done();
         });
       });
@@ -34,7 +33,7 @@ describe('User', () => {
           password: "1234567890"
         })
         .then((user) => {
-
+          // This code block should not run
         })
         .catch((err) => {
           expect(err.message).toContain("Validation error: must be a valid email");
@@ -43,47 +42,24 @@ describe('User', () => {
       });
 
       it("should not create a user with an email already taken", (done) => {
+        
+        let newUser = {email: 'loser@gmail.com', password: '123456', passwordConfirmation: '123456' };
 
-          // Check this out, when running the tests, this section only partially
-          // runs. 
-          console.log('This will show the test is running.');
-          // This console.log will run when you run the tests, but look below.
-            User.create({
-              email: "user@example.com",
-              password: "1234567890"
-            })
-            .then((user) => {
-          // Still running...see!
-            console.log('Still running...');
-
-            User.create({
-              email: "user@example.com",
-              password: "nananananananananananananananana BATMAN!"
-            })
-            .then((user) => {
-              // This section will be skipped due to the error, (hopefully).
-              console.log('This should not run');
-              done();
-            })
-            .catch((err) => {
-              // This section should run when it gets the error, right?
-
-              console.log('This should run right?');
-              // But it doesn't. And to prove this furthermore...
-
-              expect(err.message).toContain("Validation error");
-              // I duplicated the expect statement and misspelled message...
-              
-              expect(err.mage).toContain("Validation error");
-              // and still the tests run with no errors...
-              done();
+        userQueries.createUser(newUser, (err, user) => {
+          if(err){
+            // This code block should not run
+          }
+          else { 
+            userQueries.createUser(newUser, (err, user) => {
+              if(err){
+                expect(err.message).toContain("Validation error");
+                done();
+              } else { 
+                // This code block should not run
+              }
             });
-            done();
-          })
-          .catch((err) => {
-            console.log(err);
-            done();
-         });
+          }
+        });        
       });
    });       
 });

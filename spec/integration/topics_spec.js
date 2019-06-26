@@ -121,13 +121,13 @@ describe("routes : topics", () => {
 
     it("should delete the topic with the associated ID", (done) => {
 
-      Topic.all()
+      Topic.findAll()
       .then((topics) => {
         const topicCountBeforeDelete = topics.length;
         expect(topicCountBeforeDelete).toBe(1);
 
         request.post(`${base}${this.topic.id}/destroy`, (err, res, body) => {
-          Topic.all()
+          Topic.findAll()
           .then((topics) => {
             expect(err).toBeNull();
             expect(topics.length).toBe(topicCountBeforeDelete - 1);
