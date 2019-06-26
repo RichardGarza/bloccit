@@ -54,7 +54,7 @@ describe('User', () => {
             })
             .then((user) => {
           // Still running...see!
-            console.log('Still running...')
+            console.log('Still running...');
 
             User.create({
               email: "user@example.com",

@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   var User = sequelize.define('User', {
     email: {
       type: DataTypes.STRING,
+      unique: true,
       allowNull: false,
       validate: {
         isEmail: { msg: "must be a valid email" }
