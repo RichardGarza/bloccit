@@ -5,37 +5,43 @@ const base = "http://localhost:3000/topics";
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
+const User = require("../../src/db/models").User;
 
 describe("routes : posts", () => {
 
   beforeEach((done) => {
     this.topic;
     this.post;
+    this.user;
 
     sequelize.sync({force: true}).then((res) => {
-
-//#1
-      Topic.create({
-        title: "Winter Games",
-        description: "Post your Winter Games stories."
+      User.create({
+        email: "starman@tesla.com",
+        password: "Trekkie4lyfe"
       })
-      .then((topic) => {
-        this.topic = topic;
+      .then((user) => {
+        this.user = user;
 
-        Post.create({
-          title: "Snowball Fighting",
-          body: "So much snow!",
-          topicId: this.topic.id
+        Topic.create({
+          title: "Winter Games",
+          description: "Post your Winter Games stories.",
+          posts: [{
+            title: "Snowball Fighting",
+            body: "So much snow!",
+            userId: this.user.id
+          }]
+        }, {
+          include: {
+           model: Post,
+           as: "posts"
+          }
         })
-        .then((post) => {
-          this.post = post;
+        .then((topic) => {
+          this.topic = topic;
+          this.post = topic.posts[0];
           done();
         })
-        .catch((err) => {
-          console.log(err);
-          done();
-        });
-      });
+      })
     });
 
   });
@@ -59,8 +65,8 @@ describe("routes : posts", () => {
          url: `${base}/${this.topic.id}/posts/create`,
          form: {
            title: "Watching snow melt",
-           body: "Without a doubt my favoriting things to do besides watching paint dry!"
-         }
+           body: "Without a doubt my favoriting things to do besides watching paint dry!",
+          }
        };
        request.post(options,
          (err, res, body) => {
@@ -70,7 +76,7 @@ describe("routes : posts", () => {
              expect(post).not.toBeNull();
              expect(post.title).toBe("Watching snow melt");
              expect(post.body).toBe("Without a doubt my favoriting things to do besides watching paint dry!");
-             expect(post.topicId).not.toBeNull();
+            
              done();
            })
            .catch((err) => {
