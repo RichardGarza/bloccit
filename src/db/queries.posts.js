@@ -1,5 +1,7 @@
 const Post = require("./models").Post;
 const Topic = require("./models").Topic;
+const Authorizer = require("../policies/post");
+
 
 module.exports = {
 
@@ -35,21 +37,21 @@ module.exports = {
     })
   },
 
-  updatePost(id, updatedPost, callback){
-    return Post.findByPk(id)
-    .then((post) => {
-      if(!post){
-        return callback("Post not found");
-      }
-      post.update(updatedPost, {
-        fields: Object.keys(updatedPost)
-      })
+  updatePost(post, req, callback){
+
+   return Post.findByPk(req.params.id).then( post => {
+
+    if(!post){
+      callback(err);
+    } else {
+      post.update(post, { fields: Object.keys(post)})
       .then(() => {
         callback(null, post);
-      })
-      .catch((err) => {
-        callback(err);
       });
-    });
+    }
+   })
+   .catch((err) => {
+     callback(err);
+   });
   }
 }

@@ -1,4 +1,5 @@
 const postQueries = require("../db/queries.posts.js");
+const Authorizer = require("../policies/post");
 
 module.exports = {
 
@@ -43,23 +44,33 @@ module.exports = {
   },
 
   edit(req, res, next){
+
     postQueries.getPost(req.params.id, (err, post) => {
+
       if(err || post == null){
         res.redirect(404, "/");
       } else {
-        res.render("posts/edit", {post});
+        const authorized = new Authorizer(req.user, post).edit();
+
+        if(authorized) { 
+          res.render("posts/edit", {post});
+        } else {
+          req.flash("notice", "You are not authorized to do that.");
+          res.redirect(401,"/topics");
+
+        }
       }
     });
   },
 
   update(req, res, next){
-    postQueries.updatePost(req.params.id, req.body, (err, post) => {
-      if(err || post == null){
-        res.redirect(404, `/topics/${req.params.topicId}/posts/${req.params.id}/edit`);
+
+    postQueries.updatePost( req.body, req, (err, post) => {
+      if( err || post == null){
+        res.redirect(`/topics/${req.params.topicId}/posts/${req.params.id}/edit`);
       } else {
         res.redirect(`/topics/${req.params.topicId}/posts/${req.params.id}`);
       }
     });
   }
-
 }
