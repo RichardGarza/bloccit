@@ -27,7 +27,6 @@
      }
    },
  
- // #6
    destroy(req, res, next){
      commentQueries.deleteComment(req, (err, comment) => {
        if(err){
