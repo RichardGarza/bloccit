@@ -4,6 +4,7 @@ module.exports = {
     const topicRoutes = require("../routes/topics");
     const postRoutes = require("../routes/posts");
     const userRoutes = require("../routes/users");
+    const commentRoutes = require("../routes/comments");
 
     // In testing environment, use fake authorization
     if(process.env.NODE_ENV === "test") {
@@ -15,5 +16,6 @@ module.exports = {
     app.use(topicRoutes);
     app.use(postRoutes);
     app.use(userRoutes);
+    app.use(commentRoutes);
   }
 }
