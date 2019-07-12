@@ -3,6 +3,7 @@ const Topic = require("./models").Topic;
 const Authorizer = require("../policies/post");
 const Comment = require("./models").Comment;
 const User = require("./models").User;
+const Vote = require("./models").Vote;
 
 module.exports = {
 
@@ -19,9 +20,8 @@ module.exports = {
   getPost(id, callback){
     return Post.findByPk(id, {
       include: [
-        {model: Comment, as: "comments", include: [
-          {model: User }
-        ]}
+        { model: Comment, as: "comments", include: [ { model: User } ] },
+        { model: Vote, as: "votes" }
       ]
     })
     .then((post) => {
