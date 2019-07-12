@@ -25,31 +25,45 @@ module.exports = {
     })
   },
 
-  deletePost(id, callback){
-    return Post.destroy({
-      where: { id }
-    })
-    .then((deletedRecordsCount) => {
-      callback(null, deletedRecordsCount);
-    })
-    .catch((err) => {
-      callback(err);
+  deletePost(req, callback){
+    return Post.findByPk(req.params.id)
+    .then((post) => {
+      const authorized = new Authorizer(req.user, post).destroy();
+
+      if (authorized){
+
+        Post.destroy({
+          where: { id: req.params.id }
+        })
+        .then((deletedRecordsCount) => {
+          callback(null, deletedRecordsCount);
+        })
+        .catch((err) => {
+          callback(err);
+        })
+      } else {
+        callback("NOT AUTHORIZED");
+      }
     })
   },
 
-  updatePost(post, req, callback){
+  updatePost(body, req, callback){
+    return Post.findByPk(req.params.id).then( post => {
+      if(!post){
+        callback(err);
+      } else {
+        const authorized = new Authorizer(req.user, post).update();
 
-   return Post.findByPk(req.params.id).then( post => {
-
-    if(!post){
-      callback(err);
-    } else {
-      post.update(post, { fields: Object.keys(post)})
-      .then(() => {
-        callback(null, post);
-      });
-    }
-   })
+        if(authorized){
+          post.update(body, { fields: Object.keys(body)})
+          .then((post) => {
+            callback(null, post);
+          });
+        } else {
+          callback('UNAUTHORIZED')
+        }
+      }
+    })
    .catch((err) => {
      callback(err);
    });

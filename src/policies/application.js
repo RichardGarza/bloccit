@@ -2,8 +2,10 @@ module.exports = class ApplicationPolicy {
 
   // #1
    constructor(user, record) {
+
      this.user = user;
      this.record = record;
+     
    }
  
   // #2
@@ -22,11 +24,7 @@ module.exports = class ApplicationPolicy {
    create() {
      return this.new();
    }
- 
-   show() {
-     return true;
-   }
- 
+
    edit() {
      return this.new() &&
        this.record && (this._isOwner() || this._isAdmin());
@@ -39,4 +37,8 @@ module.exports = class ApplicationPolicy {
    destroy() {
      return this.update();
    }
+    
+   show() {
+    return true;
+  }
  };
