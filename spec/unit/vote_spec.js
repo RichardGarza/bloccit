@@ -9,13 +9,12 @@ const Vote = require("../../src/db/models").Vote;
 describe("Vote", () => {
 
   beforeEach((done) => {
- // #2
+ 
     this.user;
     this.topic;
     this.post;
     this.vote;
 
- // #3
     sequelize.sync({force: true}).then((res) => {
 
       User.create({
@@ -108,6 +107,24 @@ describe("Vote", () => {
       });
     });
 
+    it("should not create a vote when given invalid value.", (done) => {
+
+      Vote.create({
+        value: 17,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+
+        // This code block will not be executed.
+
+      })
+      .catch((err) => {
+        expect(err).not.toBeNull();
+        done();
+      });
+    });
+
     it("should not create a vote without assigned post or user", (done) => {
       Vote.create({
         value: 1
@@ -132,25 +149,25 @@ describe("Vote", () => {
 
     it("should associate a vote and a user together", (done) => {
 
-       Vote.create({           // create a vote on behalf of this.user
+       Vote.create({           // Create a vote on behalf of this.user
          value: -1,
          postId: this.post.id,
          userId: this.user.id
        })
        .then((vote) => {
-         this.vote = vote;     // store it
-         expect(vote.userId).toBe(this.user.id); //confirm it was created for this.user
+         this.vote = vote;     // Store it for later
+         expect(vote.userId).toBe(this.user.id); // Confirm it was created for this.user
 
-         User.create({                 // create a new user
+         User.create({                 // Create a new user
            email: "bob@example.com",
            password: "password"
          })
          .then((newUser) => {
 
-           this.vote.setUser(newUser)  // change the vote's user reference for newUser
+           this.vote.setUser(newUser)  // Change the vote's user reference for newUser
            .then((vote) => {
 
-             expect(vote.userId).toBe(newUser.id); //confirm it was updated
+             expect(vote.userId).toBe(newUser.id); // Confirm it was updated
              done();
 
            });
@@ -190,28 +207,28 @@ describe("Vote", () => {
 
     it("should associate a post and a vote together", (done) => {
 
-      Vote.create({           // create a vote on `this.post`
+      Vote.create({           // Create a vote on `this.post`
         value: -1,
         postId: this.post.id,
         userId: this.user.id
       })
       .then((vote) => {
-        this.vote = vote;     // store it
+        this.vote = vote;     // Store it
 
-        Post.create({         // create a new post
+        Post.create({         // Create a new post
           title: "Dress code on Proxima b",
           body: "Spacesuit, space helmet, space boots, and space gloves",
           topicId: this.topic.id,
           userId: this.user.id
         })
         .then((newPost) => {
+                              // Check vote not associated with newPost
+          expect(this.vote.postId).toBe(this.post.id); 
 
-          expect(this.vote.postId).toBe(this.post.id); // check vote not associated with newPost
-
-          this.vote.setPost(newPost)              // update post reference for vote
+          this.vote.setPost(newPost)              // Update post reference for vote
           .then((vote) => {
 
-            expect(vote.postId).toBe(newPost.id); // ensure it was updated
+            expect(vote.postId).toBe(newPost.id); // Ensure it was updated
             done();
 
           });
@@ -222,7 +239,6 @@ describe("Vote", () => {
         });
       });
     });
-
   });
 
 

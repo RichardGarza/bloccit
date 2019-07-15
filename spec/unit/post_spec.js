@@ -2,6 +2,7 @@ const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
 const User = require("../../src/db/models").User;
+const Vote = require("../../src/db/models").Vote;
 
 describe("Post", () => {
 
@@ -164,5 +165,247 @@ describe("Post", () => {
 
     });
 
+  });
+
+  describe("#getPoints()", () => {
+
+    it("should return 1 when one upvote has been made", (done) => {
+
+      // Create vote assosiated with post.
+      Vote.create({
+        value: 1,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+
+        // Verify creation of vote. 
+        expect(vote.value).toBe(1);
+        expect(vote.postId).toBe(this.post.id);
+        expect(vote.userId).toBe(this.user.id);
+
+        // Call getPoints() to check number of votes.
+       this.post.getPoints()
+       .then((points) => {
+         expect(points).toBe(1);
+         done();
+       })
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+
+    it("should return 0 when one upvote and one downvote have been made", (done) => {
+      // Create downvote from this.user on post
+      Vote.create({
+        value: -1,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+
+        // Verify creation of downvote. 
+        expect(vote.value).toBe(-1);
+        expect(vote.postId).toBe(this.post.id);
+        expect(vote.userId).toBe(this.user.id);
+        // Create second user for upvote.
+        User.create({
+          email: "Jaguar@FType.com",
+          password: "MyDreamCar"
+        })
+        .then((user) => {
+
+        // Create upvote from new user on post.
+          Vote.create({
+            value: 1,
+            postId: this.post.id,
+            userId: user.id
+          })
+          .then((vote) => {
+
+            // Verify creation of vote. 
+            expect(vote.value).toBe(1);
+            expect(vote.postId).toBe(this.post.id);
+            expect(vote.userId).toBe(user.id);
+
+            // Call getPoints() to check number of votes.
+          this.post.getPoints()
+          .then((points) => {
+            expect(points).toBe(0);
+            done();
+          })
+          })
+          .catch((err) => {
+            console.log(err);
+            done();
+          });
+        })
+        .catch((err) => { console.log(err); done(); })
+      })
+    });
+
+    it("should return 0 when no votes are made", (done) => {
+
+        // Call getPoints() to check number of votes.
+       this.post.getPoints()
+       .then((points) => {
+         expect(points).toBe(0);
+         done();
+       })
+    });
+  });
+
+  describe("#hasUpvoteFor(userId)", () => {
+
+    it("should return true when user upvoted post", (done) => {
+
+      // Create upvote assosiated with post.
+      Vote.create({
+        value: 1,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+
+        // Verify creation of upvote. 
+        expect(vote.value).toBe(1);
+        expect(vote.postId).toBe(this.post.id);
+        expect(vote.userId).toBe(this.user.id);
+
+        // Call hasUpvoteFor method passing userId
+        this.post.hasUpvoteFor(this.user.id)
+        .then((boolean) => {
+          expect(boolean).toBe(true);
+          done();
+        })
+        .catch((err) => { console.log(err); done(); })
+       
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+
+    it("should return false when user has downvoted post", (done) => {
+
+      // Create downvote assosiated with post.
+      Vote.create({
+        value: -1,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+
+        // Verify creation of downvote. 
+        expect(vote.value).toBe(-1);
+        expect(vote.postId).toBe(this.post.id);
+        expect(vote.userId).toBe(this.user.id);
+
+        // Call hasUpvoteFor method passing userId
+        this.post.hasUpvoteFor(this.user.id)
+        .then((boolean) => {
+          expect(boolean).toBe(false);
+          done();
+        })
+        .catch((err) => { console.log(err); done(); })
+       
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+
+    it("should return false when user has not voted on post", (done) => {
+
+      // Call hasUpvoteFor method passing userId without creating vote
+      this.post.hasUpvoteFor(this.user.id)
+      .then((boolean) => {
+        expect(boolean).toBe(false);
+        done();
+      })
+      .catch((err) => { 
+        console.log(err); 
+        done(); 
+      })
+    });
+  });
+
+  describe("#hasDownvoteFor(userId)", () => {
+
+    it("should return true when user downvoted post", (done) => {
+
+      // Create downvote assosiated with post.
+      Vote.create({
+        value: -1,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+
+        // Verify creation of downvote. 
+        expect(vote.value).toBe(-1);
+        expect(vote.postId).toBe(this.post.id);
+        expect(vote.userId).toBe(this.user.id);
+
+        // Call hasDownvoteFor method passing userId
+        this.post.hasDownvoteFor(this.user.id)
+        .then((boolean) => {
+          expect(boolean).toBe(true);
+          done();
+        })
+        .catch((err) => { console.log(err); done(); })
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+
+    it("should return false when user has upvoted post", (done) => {
+
+      // Create upvote assosiated with post.
+      Vote.create({
+        value: 1,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+
+        // Verify creation of upvote. 
+        expect(vote.value).toBe(1);
+        expect(vote.postId).toBe(this.post.id);
+        expect(vote.userId).toBe(this.user.id);
+
+        // Call hasDownvoteFor method passing userId
+        this.post.hasDownvoteFor(this.user.id)
+        .then((boolean) => {
+          expect(boolean).toBe(false);
+          done();
+        })
+        .catch((err) => { console.log(err); done(); })
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+
+    it("should return false when user has not voted on post", (done) => {
+
+      // Call hasDownvoteFor method passing userId without creating vote
+      this.post.hasDownvoteFor(this.user.id)
+      .then((boolean) => {
+        expect(boolean).toBe(false);
+        done();
+      })
+      .catch((err) => { 
+        console.log(err); 
+        done(); 
+      })
+    });
   });
 });

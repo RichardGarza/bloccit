@@ -73,7 +73,7 @@ describe("routes : votes", () => {
 
     describe("GET /topics/:topicId/posts/:postId/votes/upvote", () => {
 
-      it("should not create a new vote", (done) => {
+      it("should not create a new vote for guests", (done) => {
         const options = {
           url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`
         };
@@ -144,6 +144,56 @@ describe("routes : votes", () => {
             });
           }
         );
+      });
+
+      it("should not create more than one upvote per user per post", (done) => {
+        // Prepare request for upvote.
+        const options = {
+          url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`
+        };
+
+        // Send request for upvote.
+        request.get(options,
+          (err, res, body) => {
+
+            // Find all votes assosiated with post
+            Vote.findAll({          
+              where: {
+                postId: this.post.id
+              }
+            })
+            .then((votes) => {          
+
+              // Count votes and save for later.     
+              let voteTally = votes.length;
+              
+              // Attempt to upvote same post from same user.
+              request.get(options,
+                (err, res, body) => {
+
+                  // Find all posts now assosiated with post
+                  Vote.findAll({          
+                    where: {
+                      postId: this.post.id
+                    }
+                  })
+                  .then((votes) => {               
+
+                    // Count votes again to confirm no additional upvotes were added.
+                    expect(votes.length).toBe(voteTally);
+                    done();
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    done();
+                  });
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+              done();
+            });
+          });
       });
     });
 

@@ -265,7 +265,7 @@ describe("routes : comments", () => {
       );
     });
 
-  // #2
+  
     describe("POST /topics/:topicId/posts/:postId/comments/create", () => {
 
       it("should create a new comment and redirect", (done) => {
@@ -293,7 +293,6 @@ describe("routes : comments", () => {
       });
     });
 
-  // #3
     describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
 
       it("should delete the comment that belongs to admin", (done) => {
