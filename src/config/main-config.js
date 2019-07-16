@@ -22,7 +22,7 @@ module.exports = {
       cookie: { maxAge: 1.21e+9 }
     }));
     app.use(flash());
-    
+    // Initialize passport verification
     passportConfig.init(app);
 
     app.use((req,res,next) => {
