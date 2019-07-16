@@ -8,14 +8,15 @@ module.exports = {
   create(req, res, next){
        
        // Make newUser object from request body.
-    let newUser = {
-      email: req.body.email,
-      password: req.body.password,
-      passwordConfirmation: req.body.passwordConfirmation
-    };
-
+       newUser = {
+        email: req.body.email,
+        password: req.body.password,
+        passwordConfirmation: req.body.passwordConfirmation
+      };
+    
        // Call createuser with newUser object.
     userQueries.createUser(newUser, (err, user) => {
+
        // If there's an error, display it and redirect to sign up.
       if(err){
         req.flash("error", err);

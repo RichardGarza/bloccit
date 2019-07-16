@@ -8,8 +8,6 @@ module.exports = {
       {
         type: Sequelize.STRING,
         allowNull: false,
-
- // #1
         defaultValue: "member"
       }
     );

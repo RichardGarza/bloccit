@@ -1,6 +1,6 @@
 const User = require("./models").User;
 const Post = require("./models").Post;
- const Comment = require("./models").Comment;
+const Comment = require("./models").Comment;
 const bcrypt = require("bcryptjs");
 
 module.exports = {
@@ -10,6 +10,19 @@ module.exports = {
     const salt = bcrypt.genSaltSync();
     const hashedPassword = bcrypt.hashSync(newUser.password, salt);
 
+    if(newUser.email === 'admin@secretsaucyness.com'){  
+      return User.create({
+        email: newUser.email,
+        password: hashedPassword,
+        role: "admin"
+      })
+      .then((user) => {
+        callback(null, user);
+      })
+      .catch((err) => {
+        callback(err);
+      });
+   } else {
     return User.create({
       email: newUser.email,
       password: hashedPassword
@@ -20,6 +33,7 @@ module.exports = {
     .catch((err) => {
       callback(err);
     });
+   }
   },
 
   getUser(id, callback){

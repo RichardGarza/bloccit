@@ -94,34 +94,64 @@ describe("routes : users", () => {
 
 describe("POST /users", () => {
 
-      it("should create a new user with valid values and redirect", (done) => {
+  it("should create a new user with valid values and redirect", (done) => {
+    
+    const options = {
+      url: base,
+      form: {
+        email: "user@example.com",
+        password: "123456789"
+      }
+    }
+    // Send Post Request
+    request.post(options,
+      (err, res, body) => {
+
+    // Check Database for new User
+        User.findOne({where: {email: "user@example.com"}})
+        .then((user) => {
+          expect(user).not.toBeNull();
+          expect(user.email).toBe("user@example.com");
+          expect(user.id).toBe(1);
+          done();
+        })
+        .catch((err) => {
+          console.log(err);
+          done();
+        });
+      }
+    );
+  });
+
+  it("should create a new admin with secret values and redirect", (done) => {
         
-        const options = {
-          url: base,
-          form: {
-            email: "user@example.com",
-            password: "123456789"
-          }
-        }
-        // Send Post Request
-        request.post(options,
-          (err, res, body) => {
-  
-        // Check Database for new User
-            User.findOne({where: {email: "user@example.com"}})
-            .then((user) => {
-              expect(user).not.toBeNull();
-              expect(user.email).toBe("user@example.com");
-              expect(user.id).toBe(1);
-              done();
-            })
-            .catch((err) => {
-              console.log(err);
-              done();
-            });
-          }
-        );
-      });
+    const options = {
+      url: base,
+      form: {
+        email: "admin@secretsaucyness.com",
+        password: "123456789"
+      }
+    }
+    // Send Post Request
+    request.post(options,
+      (err, res, body) => {
+
+    // Check Database for new Admin User
+        User.findOne({where: {email: "admin@secretsaucyness.com"}})
+        .then((user) => {
+          expect(user).not.toBeNull();
+          expect(user.email).toBe("admin@secretsaucyness.com");
+          expect(user.role).toBe("admin");
+          expect(user.id).toBe(1);
+          done();
+        })
+        .catch((err) => {
+          console.log(err);
+          done();
+        });
+      }
+    );
+  });
   
       it("should not create a new user with invalid attributes and redirect", (done) => {
         request.post(
