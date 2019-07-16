@@ -227,5 +227,4 @@ describe("routes : votes", () => {
       });
     });
   }); 
-  
 });
