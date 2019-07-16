@@ -1,22 +1,22 @@
 {
-  "name": "bloccit",
+  "name": "Skeleton",
   "version": "1.0.0",
-  "description": "A reddit like application for users to discuss and share content",
+  "description": "A skeleton to build a full stack Node.js app",
   "main": "src/server.js",
   "scripts": {
-    "test": "set NODE_ENV=test&& jasmine",
+    "test": "clear && set NODE_ENV=test&& jasmine",
     "start": "node src/server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RichardGarza/bloccit.git"
+    "url": "git+https://github.com/RichardGarza/Skeleton"
   },
-  "author": "",
+  "author": "Richard Garza",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/RichardGarza/bloccit/issues"
+    "url": "https://github.com/RichardGarza/Skeleton/issues"
   },
-  "homepage": "https://github.com/RichardGarza/bloccit#readme",
+  "homepage": "https://github.com/RichardGarza/Skeleton#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",

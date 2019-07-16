@@ -20,5 +20,11 @@ function normalizePort(val) {
 
 
 server.on("listening", () => {
-  console.log(`Welcome to Bloccit. Express is listening for requests on port ${server.address().port}...`);
+  
+  console.log('Welcome to Skeleton...');
+
+  setTimeout( () => {
+    console.log(`Express is listening for requests on port ${server.address().port}...`);
+  }, 1500)
+
 });

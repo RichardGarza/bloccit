@@ -1,9 +1,11 @@
-Welcome to Bloccit. 
+Welcome to Skeleton. 
 
-This is a clone of the popular website, Reddit. 
+This is a skeleton of a full stack node app. 
 
-It's written using JavaScript, Node.js, Express.js, PostgreSQL, and Sequelize.
+It's written using JavaScript, Node.js, Express.js, Passport.js, PostgreSQL, and Sequelize.
 
-It's deployed using Heroku.
+All testing is done with Jasmine. 
+
+Password hashing uses bcrypt.
 
 Enjoy!
