@@ -5,6 +5,7 @@ const User = require("../../src/db/models").User;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
 const Comment = require("../../src/db/models").Comment;
+const Favorite = require("../../src/db/models").Favorite;
 const sequelize = require("../../src/db/models/index").sequelize;
 
 describe("routes : users", () => {
@@ -34,8 +35,8 @@ describe("routes : users", () => {
         email: "starman@tesla.com",
         password: "Trekkie4lyfe"
       })
-      .then((res) => {
-        this.user = res;
+      .then((user) => {
+        this.user = user;
 
         Topic.create({
           title: "Winter Games",
@@ -51,32 +52,62 @@ describe("routes : users", () => {
             as: "posts"
           }
         })
-        .then((res) => {
-          this.post = res.posts[0];
+        .then((topic) => {
+          this.post = topic.posts[0];
 
           Comment.create({
             body: "This comment is alright.",
             postId: this.post.id,
             userId: this.user.id
           })
-          .then((res) => {
-            this.comment = res;
-            done();
+          .then((comment) => {
+            this.comment = comment;
+            Favorite.create({
+              userId: this.user.id,
+              postId: this.post.id
+            }).then(() => { done(); })
           })
         })
       })
-
     });
 
-    it("should present a list of comments and posts a user has created", (done) => {
+    it("should present user's posts && user's comment && user's favorite posts", (done) => {
+      User.create({
+        email: "shaqalack@tallMen.com",
+        password: "hanesTagless71"
+      })
+      .then((user) => {
+        Post.create({
+          title: "Fireball Fighting",
+          body: "So much Pain!",
+          userId: user.id,
+          topicId: this.post.topicId
+        })
+        .then((post) => {
+          Favorite.create({
+            userId: this.user.id,
+            postId: post.id
+          })
+          .then(
+            setTimeout(() => {  // Give database 2 seconds to catch up before sending request.
+              request.get(`${base}${this.user.id}`, (err, res, body) => {
 
-      request.get(`${base}${this.user.id}`, (err, res, body) => {
+                // Verify body contains user's post 
+                expect(body).toContain("Snowball Fighting"); 
 
-        expect(body).toContain("Snowball Fighting");
-        expect(body).toContain("This comment is alright.")
-        done();
-      });
+                // Verify body contains user's comment
+                expect(body).toContain("This comment is alright.");
 
+                // Verify body contains favorited post created by other user
+                expect(body).toContain("Fireball Fighting");
+
+                done();
+              });
+            }, 2000)
+          )
+        })
+      })
+      .catch((err) => { console.log(err); done(); })
     });
   });
 
