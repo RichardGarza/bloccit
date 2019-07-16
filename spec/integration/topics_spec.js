@@ -6,17 +6,17 @@ const sequelize = require('../../src/db/models/index').sequelize;
 const Topic = require("../../src/db/models").Topic;
 const User = require("../../src/db/models").User;
 
-function authorizeUser(role, done) { // helper function to create and authorize new user
+function authorizeUser(role, done) { 
   User.create({
     email: `${role}@example.com`,
     password: "123456",
     role: role
   })
   .then((user) => {
-    request.get({         // mock authentication
+    request.get({        
       url: "http://localhost:3000/auth/fake",
       form: {
-        role: user.role,     // mock authenticate as `role` user
+        role: user.role,     
         userId: user.id,
         email: user.email
       }
@@ -30,15 +30,15 @@ function authorizeUser(role, done) { // helper function to create and authorize 
 
 describe("routes : topics", () => {
 
-  beforeEach((done) => { // before each context     
-    this.topic;   // define variables and bind to context
-    sequelize.sync({ force: true }).then(() => {  // clear database
+  beforeEach((done) => {      
+    this.topic;   
+    sequelize.sync({ force: true }).then(() => {  
       Topic.create({
         title: "JS Frameworks",
         description: "There is a lot of them"
       })
-      .then((res) => {
-        this.topic = res;  // store resulting topic in context
+      .then((topic) => {
+        this.topic = topic;  
         done();
       })
       .catch((err) => {
@@ -48,10 +48,10 @@ describe("routes : topics", () => {
     });
   });
 
-  // context of admin user
+ ///////////////////////////////////////////// ADMIN USER /////////////////////////////////////////////
   describe("admin user performing CRUD actions for Topic", () => {
 
-    beforeEach((done) => {  // before each suite in admin context
+    beforeEach((done) => {  
       authorizeUser("admin", done);
     });
 
@@ -65,7 +65,6 @@ describe("routes : topics", () => {
           done();
         });
       });
-
     });
 
     describe("GET /topics/new", () => {
@@ -77,7 +76,6 @@ describe("routes : topics", () => {
           done();
         });
       });
-
     });
 
     describe("POST /topics/create", () => {
@@ -116,7 +114,6 @@ describe("routes : topics", () => {
           done();
         });
       });
-
     });
 
     describe("POST /topics/:id/destroy", () => {
@@ -139,9 +136,7 @@ describe("routes : topics", () => {
 
           });
         })
-
       });
-
     });
 
     describe("GET /topics/:id/edit", () => {
@@ -154,7 +149,6 @@ describe("routes : topics", () => {
           done();
         });
       });
-
     });
 
     describe("POST /topics/:id/update", () => {
@@ -177,12 +171,10 @@ describe("routes : topics", () => {
           });
         });
       });
-
     });
+  }); // End context for admin user
 
-  }); //end context for admin user
-
-  // context of member user
+  /////////////////////////////////////////////// MEMBER USER //////////////////////////////////////////////////
   describe("member user performing CRUD actions for Topic", () => {
 
     beforeEach((done) => {  // before each suite in member context
@@ -199,7 +191,6 @@ describe("routes : topics", () => {
           done();
         });
       });
-
     });
 
     describe("GET /topics/new", () => {
@@ -211,7 +202,6 @@ describe("routes : topics", () => {
           done();
         });
       });
-
     });
 
     describe("POST /topics/create", () => {
@@ -228,7 +218,7 @@ describe("routes : topics", () => {
           (err, res, body) => {
             Topic.findOne({where: {title: "blink-182 songs"}})
             .then((topic) => {
-              expect(topic).toBeNull(); // no topic should be returned
+              expect(topic).toBeNull();
               done();
             })
             .catch((err) => {
@@ -243,8 +233,7 @@ describe("routes : topics", () => {
     describe("GET /topics/:id", () => {
 
       it("should render a view with the selected topic", (done) => {
-        // variables defined outside, like `this.topic` are only available
-        // inside `it` blocks.
+
         request.get(`${base}${this.topic.id}`, (err, res, body) => {
           expect(err).toBeNull();
           expect(body).toContain("JS Frameworks");
@@ -270,12 +259,9 @@ describe("routes : topics", () => {
               expect(topics.length).toBe(topicCountBeforeDelete);
               done();
             })
-
           });
         })
-
       });
-
     });
 
     describe("GET /topics/:id/edit", () => {
@@ -285,11 +271,10 @@ describe("routes : topics", () => {
         request.get(`${base}${this.topic.id}/edit`, (err, res, body) => {
           expect(err).toBeNull();
           expect(body).not.toContain("Edit Topic");
-          expect(body).toContain("JS Frameworks"); // confirm redirect to topic show
+          expect(body).toContain("Unauthorized"); 
           done();
         });
       });
-
     });
 
     describe("POST /topics/:id/update", () => {
@@ -310,14 +295,11 @@ describe("routes : topics", () => {
             where: { id:1 }
           })
           .then((topic) => {
-            expect(topic.title).toBe("JS Frameworks"); // confirm title is unchanged
+            expect(topic.title).toBe("JS Frameworks"); // Confirm title is unchanged
             done();
           });
         });
       });
-
     });
-
-  });
-
+  }); // End admin user context.
 });

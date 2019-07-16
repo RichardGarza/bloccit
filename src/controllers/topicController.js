@@ -5,7 +5,6 @@ module.exports = {
   index(req, res, next){
     topicQueries.getAllTopics((err, topics) => {
 
-      //#3
       if(err){
         res.redirect(500, "static/index");
       } else {
@@ -39,7 +38,7 @@ module.exports = {
         if(err){
           res.redirect(500, "topics/new");
         } else {
-          res.redirect(303, `/topics/${topic.id}`);
+          res.redirect(202, `/topics/${topic.id}`);
         }
       });
     } else {
@@ -82,7 +81,7 @@ module.exports = {
         res.render("topics/edit", {topic});
       } else {
         req.flash("You are not authorized to do that.")
-        res.redirect(`/topics/${req.params.id}`)
+        res.redirect(401, `/topics/${req.params.id}`)
       }
     }
   });
@@ -92,7 +91,7 @@ module.exports = {
 
      topicQueries.updateTopic(req, req.body, (err, topic) => {
        if(err || topic == null){
-         res.redirect(401, `/topics/${req.params.id}/edit`);
+         res.redirect(err, `/topics/${req.params.id}/edit`);
        } else {
          res.redirect(`/topics/${req.params.id}`);
        }

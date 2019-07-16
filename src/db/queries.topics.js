@@ -7,11 +7,9 @@ const Authorizer = require('../policies/topic');
 
 module.exports = {
 
-//#1
   getAllTopics(callback){
     return Topic.findAll()
 
-//#2
     .then((topics) => {
       callback(null, topics);
     })
@@ -78,7 +76,7 @@ module.exports = {
     .then((topic) => {
 
       if(!topic){
-        return callback("Topic not found");
+        return callback(404);
       }
 
       const authorized = new Authorizer(req.user, topic).update();
@@ -95,9 +93,8 @@ module.exports = {
           callback(err);
         });
       } else {
-
         req.flash("notice", "You are not authorized to do that.");
-        callback("Forbidden");
+        callback(401);
       }
     });
    }

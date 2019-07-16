@@ -28,13 +28,12 @@ module.exports = {
         if(err){
           res.redirect(500, "/posts/new");
         } else {
-          res.redirect(200, `/topics/${newPost.topicId}/posts/${post.id}`);
+          res.redirect( `/topics/${newPost.topicId}/posts/${post.id}`);
         }
       });
     } else {
-      res.redirect(401, "/posts/new", `topics/${req.params.topicId}`);
+      res.redirect("/posts/new", `topics/${req.params.topicId}`);
     }
-   
   },
 
   show(req, res, next){
