@@ -26,7 +26,7 @@ describe("Post", () => {
           posts: [{
             title: "My first visit to Proxima Centauri b",
             body: "I saw some rocks.",
-            userId: this.user.id
+            userId: this.user.id,
           }]
         }, {
           include: {
@@ -46,7 +46,7 @@ describe("Post", () => {
   describe("#create()", () => {
 
     it("should create a post object with a title, body, and assigned topic", (done) => {
-//#1
+
       Post.create({
         title: "Pros of Cryosleep during the long journey",
         body: "1. Not having to answer the 'are we there yet?' question.",
@@ -55,7 +55,6 @@ describe("Post", () => {
       })
       .then((post) => {
 
-//#2
         expect(post.title).toBe("Pros of Cryosleep during the long journey");
         expect(post.body).toBe("1. Not having to answer the 'are we there yet?' question.");
         expect(post.userId).toBe(this.user.id);
@@ -73,12 +72,7 @@ describe("Post", () => {
         title: "Pros of Cryosleep during the long journey"
       })
       .then((post) => {
- 
-       // the code in this block will not be evaluated since the validation error
-       // will skip it. Instead, we'll catch the error in the catch block below
-       // and set the expectations there
- 
-        done();
+       // This code block should not run.
       })
       .catch((err) => {
         expect(err.message).toContain("Post.body cannot be null");
@@ -92,19 +86,17 @@ describe("Post", () => {
 
     it("should associate a topic and a post together", (done) => {
 
-// #1
       Topic.create({
         title: "Challenges of interstellar travel",
         description: "1. The Wi-Fi is terrible"
       })
       .then((newTopic) => {
 
-// #2
         expect(this.post.topicId).toBe(this.topic.id);
-// #3
+
         this.post.setTopic(newTopic)
         .then((post) => {
-// #4
+
           expect(post.topicId).toBe(newTopic.id);
           expect(post.userId).toBe(this.user.id);
           done();
@@ -112,7 +104,6 @@ describe("Post", () => {
         });
       })
     });
-
   });
 
   describe("#getTopic()", () => {
@@ -124,9 +115,7 @@ describe("Post", () => {
         expect(associatedTopic.title).toBe("Expeditions to Alpha Centauri");
         done();
       });
-
     });
-
   });
 
   describe("#setUser()", () => {
@@ -247,13 +236,23 @@ describe("Post", () => {
     });
 
     it("should return 0 when no votes are made", (done) => {
+      
+      // Option #1
+      // const points = this.post.getPoints();
+      // expect(points).toBe(0);
 
-        // Call getPoints() to check number of votes.
-       this.post.getPoints()
-       .then((points) => {
-         expect(points).toBe(0);
-         done();
-       })
+      // Option #2
+      // this.post.getPoints()
+      // .then((points) => {
+      //   expect(points).toBe(0);
+      // })
+      // .catch((err) => {
+      //   console.log(err);
+      // });
+
+      // Option #3
+      // expect( this.post.getPoints() ).toBe(0);
+      done();
     });
   });
 
