@@ -242,13 +242,13 @@ describe("Post", () => {
       // expect(points).toBe(0);
 
       // Option #2
-      // this.post.getPoints()
-      // .then((points) => {
-      //   expect(points).toBe(0);
-      // })
-      // .catch((err) => {
-      //   console.log(err);
-      // });
+      this.post.getPoints()
+      .then((points) => {
+        expect(points).toBe(0);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
       // Option #3
       // expect( this.post.getPoints() ).toBe(0);
