@@ -37,15 +37,15 @@ module.exports = {
 
     if(req.method === "POST") {
 
-      req.checkBody("title", "must be at least 5 characters in length").isLength({min: 5});
-      req.checkBody("description", "must be at least 10 characters in length").isLength({min: 10});
+      req.checkBody("title", "Title must be at least 5 characters in length").isLength({min: 5});
+      req.checkBody("description", "Description must be at least 10 characters in length").isLength({min: 10});
     }
 
     const errors = req.validationErrors();
 
     if (errors) {
       req.flash("error", errors);
-      return res.redirect(400, req.headers.referer)
+      return res.redirect(req.headers.referer)
     } else {
       return next();
     }
