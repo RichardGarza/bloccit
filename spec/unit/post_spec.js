@@ -174,11 +174,44 @@ describe("Post", () => {
         expect(vote.userId).toBe(this.user.id);
 
         // Call getPoints() to check number of votes.
-       this.post.getPoints()
-       .then((points) => {
-         expect(points).toBe(1);
-         done();
-       })
+        
+        this.post.getVotes()
+        .then((votes) => {
+          this.post.votes = votes;
+          expect( this.post.getPoints() ).toBe(1);
+          done();
+        })
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+
+    it("should return -1 when one downvote has been made", (done) => {
+
+      // Create vote assosiated with post.
+      Vote.create({
+        value: -1,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+
+        // Verify creation of vote. 
+        expect(vote.value).toBe(-1);
+        expect(vote.postId).toBe(this.post.id);
+        expect(vote.userId).toBe(this.user.id);
+
+        // Call getPoints() to check number of votes.
+        this.post.getVotes()
+        .then((votes) => {
+          this.post.votes = votes;
+          expect( this.post.getPoints() ).toBe(-1);
+          done();
+        })
+        
+        done();
       })
       .catch((err) => {
         console.log(err);
@@ -220,11 +253,12 @@ describe("Post", () => {
             expect(vote.userId).toBe(user.id);
 
             // Call getPoints() to check number of votes.
-          this.post.getPoints()
-          .then((points) => {
-            expect(points).toBe(0);
-            done();
-          })
+            this.post.getVotes()
+            .then((votes) => {
+              this.post.votes = votes;
+              expect( this.post.getPoints() ).toBe(0);
+              done();
+            })
           })
           .catch((err) => {
             console.log(err);
@@ -237,22 +271,17 @@ describe("Post", () => {
 
     it("should return 0 when no votes are made", (done) => {
       
-      // Option #1
-      // const points = this.post.getPoints();
-      // expect(points).toBe(0);
-
-      // Option #2
-      this.post.getPoints()
-      .then((points) => {
-        expect(points).toBe(0);
+      this.post.getVotes()
+      .then((votes) => {
+        this.post.votes = votes;
+        this.post.getVotes()
+        .then((votes) => {
+          this.post.votes = votes;
+          expect( this.post.getPoints() ).toBe(0);
+          done();
+        })
+        done();
       })
-      .catch((err) => {
-        console.log(err);
-      });
-
-      // Option #3
-      // expect( this.post.getPoints() ).toBe(0);
-      done();
     });
   });
 
