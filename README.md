@@ -1,4 +1,4 @@
-Welcome to Bloccit. 
+Welcome to Topixx. 
 
 This is a clone of the popular website, Reddit. 
 

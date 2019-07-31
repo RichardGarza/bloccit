@@ -1,5 +1,5 @@
 {
-  "name": "bloccit",
+  "name": "topixx",
   "version": "1.0.0",
   "description": "A reddit like application for users to discuss and share content",
   "main": "src/server.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RichardGarza/bloccit.git"
+    "url": "git+https://github.com/RichardGarza/topixx.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/RichardGarza/bloccit/issues"
+    "url": "https://github.com/RichardGarza/topixx/issues"
   },
-  "homepage": "https://github.com/RichardGarza/bloccit#readme",
+  "homepage": "https://github.com/RichardGarza/topixx#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
