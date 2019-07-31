@@ -27,7 +27,6 @@ module.exports = {
       callback(null, user.id);
     });
 
-
     passport.deserializeUser((id, callback) => {
       User.findByPk(id)
       .then((user) => {

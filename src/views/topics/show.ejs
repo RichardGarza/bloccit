@@ -7,9 +7,12 @@
     <% include ../static/partials/navbar.ejs %>
 
     <main class="container">
-      <h1><%= topic.title %></h1>
+      <h1>Topic Title: <%= topic.title %></h1>
+      
+
       <% if(currentUser) { %>
         <a href="/topics/<%= topic.id %>/posts/new" class="btn btn-success">New Post</a>
+        <a href="/topics/<%= topic.id %>/flairs/new" class="btn btn-success"> New Flair </a>
         <% if(currentUser.isAdmin()) { %>
           <a href="/topics/<%= topic.id %>/edit" class="btn btn-warning">Edit</a>
           <form style="display:initial" action="/topics/<%= topic.id %>/destroy" method="post">
@@ -20,7 +23,7 @@
       <p><%= topic.description %></p>
       <hr>
 
-   <h1>Posts</h1>
+   <h3>Assosiated Posts</h3>
 
    <ul class="list-group">
      <% topic.posts.forEach((post) => { %>
@@ -29,6 +32,17 @@
        </li>
      <% }) %>
    </ul>
+
+   <h3>Assosiated Flairs</h3> 
+
+   
+      <ul class="list-group">
+        <% flairs.forEach((flair) => { %>
+          <li class="list-group-item">
+            <a href="/topics/<%= topic.id %>/flairs/<%= flair.id %>"> <%= flair.name %> </a>
+          </li>
+        <% }) %>
+      </ul>
     </main>
 
     <% include ../static/partials/baseScripts.ejs %>

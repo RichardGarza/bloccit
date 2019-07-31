@@ -7,6 +7,7 @@ module.exports = {
     const commentRoutes = require("../routes/comments");
     const voteRoutes = require("../routes/votes");
     const favoriteRoutes = require("../routes/favorites");
+    const flairRoutes = require("../routes/flairs");
 
     // In testing environment, use fake authorization
     if(process.env.NODE_ENV === "test") {
@@ -21,5 +22,6 @@ module.exports = {
     app.use(commentRoutes);
     app.use(voteRoutes);
     app.use(favoriteRoutes);
+    app.use(flairRoutes);
   }
 }

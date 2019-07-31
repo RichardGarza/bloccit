@@ -1,6 +1,6 @@
 const Topic = require("./models").Topic;
-
 const Post = require("./models").Post;
+const Flair = require("./models").Flair;
 
 const Authorizer = require('../policies/topic');
 
@@ -39,7 +39,10 @@ module.exports = {
       }]
     })
     .then((topic) => {
-      callback(null, topic);
+      Flair.findAll({ where: { topicId: topic.id }})
+      .then((flairs) => {
+        callback(null, topic, flairs)
+      })
     })
     .catch((err) => {
       callback(err);
